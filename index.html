@@ -812,7 +812,7 @@ function blockSubmit(){
     ${guest ? `<div class="actions" style="justify-content:center"><button class="btn lg" data-a="login">${I('lock','s')} تسجيل الدخول</button></div>` : ''}</div>`);
   return true;
 }
-const submitErr = m => /attempt limit/i.test(m) ? 'وصلت للحد الأقصى من المحاولات (3). تواصل مع المدرس إن احتجت محاولة إضافية' : /too fast/i.test(m) ? 'انتظر 10 ثوانٍ قبل إعادة الإرسال' : /login required/i.test(m) ? 'سجّل الدخول أولاً' : /not a student/i.test(m) ? 'حسابك غير مسجّل كطالب عند المدرس' : /not allowed/i.test(m) ? 'هذا المحتوى ليس لصفك' : null;
+const submitErr = m => /time over/i.test(m) ? 'انتهى وقت الاختبار ولم يُقبل التسليم' : /not started/i.test(m) ? 'ابدأ الاختبار أولاً ثم سلّم' : /attempt limit/i.test(m) ? 'وصلت للحد الأقصى من المحاولات (3). تواصل مع المدرس إن احتجت محاولة إضافية' : /too fast/i.test(m) ? 'انتظر 10 ثوانٍ قبل إعادة الإرسال' : /login required/i.test(m) ? 'سجّل الدخول أولاً' : /not a student/i.test(m) ? 'حسابك غير مسجّل كطالب عند المدرس' : /not allowed/i.test(m) ? 'هذا المحتوى ليس لصفك' : null;
 function takeQuiz(id){
   const z = quizzes.find(x=>x.id===id); if(!z) return;
   if(blockSubmit()) return;
@@ -831,10 +831,21 @@ function takeQuiz(id){
     <div class="actions"><button class="btn ok lg" data-a="startQuiz" data-id="${id}">${I('play','s')} ابدأ الاختبار</button></div>`);
   setTimeout(()=>{ const s=$('#stu'); if(s) s.focus(); }, 50);
 }
-function startQuiz(id){
+async function startQuiz(id){
   const z = quizzes.find(x=>x.id===id);
   const name = $('#stu').value.trim();
   if(!name){ toast('اكتب اسمك أولاً','err'); $('#stu').focus(); return; }
+  let rem = null;
+  if(z.time_limit_min){
+    const sbtn = document.querySelector('[data-a=startQuiz]'); if(sbtn) sbtn.disabled = true;
+    const r = await sb.rpc('start_quiz', { p_quiz:id });
+    if(r.error){
+      if(sbtn) sbtn.disabled = false;
+      const m = errMsg(r.error);
+      toast(submitErr(m) || (/closed/i.test(m) ? 'هذا الاختبار مغلق' : 'تعذر بدء الاختبار: ' + m), 'err'); return;
+    }
+    rem = r.data && typeof r.data.remaining_seconds === 'number' ? r.data.remaining_seconds : null;
+  }
   qs.name = name; qs.active = true;
   openModal(`
     <div class="qhead"><h3 dir="auto">${esc(z.title)}</h3>${z.time_limit_min?`<div class="timer" id="timerbox">${I('clock','s')}<span id="tm">--:--</span></div>`:''}</div>
@@ -843,7 +854,7 @@ function startQuiz(id){
       ${q.options.map((o,j)=>`<label class="ch"><input type="radio" name="q${i}" value="${j}"><span dir="auto">${esc(o)}</span></label>`).join('')}</div>`).join('')}
     <div class="actions"><button class="btn ok lg" id="subbtn" data-a="submitQuiz" data-id="${id}">${I('send','s')} تسليم الإجابات</button></div>`, true);
   if(z.time_limit_min){
-    qs.end = Date.now() + z.time_limit_min*60000;
+    qs.end = Date.now() + (rem != null ? rem*1000 : z.time_limit_min*60000);
     const tick = () => {
       const el = $('#tm');
       if(!el){ stopTimer(); return; }
