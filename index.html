@@ -989,18 +989,20 @@ function openSubmit(id){
     if(!ans && !file && !link){ toast('اكتب إجابتك أو ارفع ملفاً أو ضع رابطاً','err'); return; }
     if(file && file.size > MAX_SUB){ toast('حجم الملف أكبر من 10 ميجابايت','err'); return; }
     const btn = $('#smbtn'); btn.disabled = true; $('#prog').style.display = 'block';
-    let path = null;
+    let path = null, uploaded = false;
     try{
       if(file){
         path = `${id}/${uid()}.${extOf(file.name)}`;
         const up = await sb.storage.from(SUB_BUCKET).upload(path, file, { contentType: file.type || undefined });
         if(up.error) throw up.error;
+        uploaded = true;
       }
       const { error } = await sb.rpc('submit_assignment', { p_assignment:id, p_student:name, p_answer:ans || null, p_file_path:path, p_file_name:file ? file.name : null, p_link:link });
       if(error) throw error;
       openModal(`<div class="empty" style="border:0;margin-top:10px"><div class="eic c-green">${I('check')}</div><h4>تم استلام إجابتك</h4><div>شكراً ${esc(name)}، وصل واجبك إلى المدرس.</div><button class="btn lg" data-a="close" style="margin-top:16px">إغلاق</button></div>`);
       if(state.teacher){ counts.a[id] = (counts.a[id]||0)+1; }
     }catch(err){
+      if(uploaded && path){ try{ await sb.storage.from(SUB_BUCKET).remove([path]); }catch{} }
       const m = errMsg(err);
       toast(/deadline/i.test(m) ? 'انتهى موعد تسليم هذا الواجب' : (submitErr(m) || (/mime|type|not allowed/i.test(m) ? 'نوع الملف غير مسموح' : /row-level security|violates/i.test(m) ? 'غير مسموح لك برفع ملف لهذا الواجب' : 'تعذر الإرسال: ' + m)), 'err');
       btn.disabled = false; $('#prog').style.display = 'none';
