@@ -803,8 +803,19 @@ async function saveQuiz(){
 }
 
 /* ---------- حل الاختبار (مع المؤقت) ---------- */
+function blockSubmit(){
+  if(state.teacher || (state.me && state.me.student)) return false;
+  const guest = !state.uid;
+  openModal(`<div class="empty" style="border:0;margin-top:10px"><div class="eic c-blue">${I('lock')}</div>
+    <h4>${guest ? 'سجّل الدخول أولاً' : 'حسابك غير مسجّل كطالب'}</h4>
+    <div>${guest ? 'حلّ الاختبارات وتسليم الواجبات متاح للطلاب المسجّلين فقط. ادخل بحسابك الذي سلّمه لك المدرس.' : 'هذا الحساب غير مرتبط بصف عند المدرس. تواصل مع المدرس ليُنشئ لك حساب طالب.'}</div>
+    ${guest ? `<div class="actions" style="justify-content:center"><button class="btn lg" data-a="login">${I('lock','s')} تسجيل الدخول</button></div>` : ''}</div>`);
+  return true;
+}
+const submitErr = m => /login required/i.test(m) ? 'سجّل الدخول أولاً' : /not a student/i.test(m) ? 'حسابك غير مسجّل كطالب عند المدرس' : /not allowed/i.test(m) ? 'هذا المحتوى ليس لصفك' : null;
 function takeQuiz(id){
   const z = quizzes.find(x=>x.id===id); if(!z) return;
+  if(blockSubmit()) return;
   if(isPast(z.closes_at) && !state.teacher){ toast('هذا الاختبار مغلق','err'); return; }
   qs = { id, name:'', active:false, iv:null, end:null, sub:false, auto:false };
   openModal(`
@@ -854,7 +865,7 @@ async function submitQuiz(id){
   const { data, error } = await sb.rpc('submit_quiz', { p_quiz:id, p_student:qs.name, p_answers:answers });
   if(error){
     qs.sub = false;
-    toast(/closed/i.test(errMsg(error)) ? 'أُغلق هذا الاختبار ولم يعد يقبل التسليم' : 'تعذر تسليم الاختبار: ' + errMsg(error), 'err');
+    toast(/closed/i.test(errMsg(error)) ? 'أُغلق هذا الاختبار ولم يعد يقبل التسليم' : (submitErr(errMsg(error)) || 'تعذر تسليم الاختبار: ' + errMsg(error)), 'err');
     if(btn) btn.disabled = false; return;
   }
   qs.active = false;
@@ -940,6 +951,7 @@ function assignForm(){
 }
 function openSubmit(id){
   const a = assignments.find(x=>x.id===id); if(!a) return;
+  if(blockSubmit()) return;
   if(isPast(a.due_at) && !state.teacher){ toast('انتهى موعد تسليم هذا الواجب','err'); return; }
   openModal(`
     <h3 dir="auto">${esc(a.title)}</h3>
@@ -979,7 +991,7 @@ function openSubmit(id){
       if(state.teacher){ counts.a[id] = (counts.a[id]||0)+1; }
     }catch(err){
       const m = errMsg(err);
-      toast(/deadline/i.test(m) ? 'انتهى موعد تسليم هذا الواجب' : /mime|type|not allowed/i.test(m) ? 'نوع الملف غير مسموح' : 'تعذر الإرسال: ' + m, 'err');
+      toast(/deadline/i.test(m) ? 'انتهى موعد تسليم هذا الواجب' : (submitErr(m) || (/mime|type|not allowed/i.test(m) ? 'نوع الملف غير مسموح' : /row-level security|violates/i.test(m) ? 'غير مسموح لك برفع ملف لهذا الواجب' : 'تعذر الإرسال: ' + m)), 'err');
       btn.disabled = false; $('#prog').style.display = 'none';
     }
   };
