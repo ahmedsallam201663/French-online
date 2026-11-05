@@ -812,7 +812,7 @@ function blockSubmit(){
     ${guest ? `<div class="actions" style="justify-content:center"><button class="btn lg" data-a="login">${I('lock','s')} تسجيل الدخول</button></div>` : ''}</div>`);
   return true;
 }
-const submitErr = m => /login required/i.test(m) ? 'سجّل الدخول أولاً' : /not a student/i.test(m) ? 'حسابك غير مسجّل كطالب عند المدرس' : /not allowed/i.test(m) ? 'هذا المحتوى ليس لصفك' : null;
+const submitErr = m => /attempt limit/i.test(m) ? 'وصلت للحد الأقصى من المحاولات (3). تواصل مع المدرس إن احتجت محاولة إضافية' : /too fast/i.test(m) ? 'انتظر 10 ثوانٍ قبل إعادة الإرسال' : /login required/i.test(m) ? 'سجّل الدخول أولاً' : /not a student/i.test(m) ? 'حسابك غير مسجّل كطالب عند المدرس' : /not allowed/i.test(m) ? 'هذا المحتوى ليس لصفك' : null;
 function takeQuiz(id){
   const z = quizzes.find(x=>x.id===id); if(!z) return;
   if(blockSubmit()) return;
