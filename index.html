@@ -261,6 +261,12 @@ footer b{color:#fff}
 .gnb{color:#b9770e;font-weight:800;margin-bottom:12px}.gacts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
 @media(max-width:640px){.gopts,.gtf{grid-template-columns:1fr}.glv{grid-template-columns:1fr}.gq h3{font-size:20px}.gstats{grid-template-columns:1fr 1fr}}
 
+.gans{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 16px}.gans b{min-width:40px;height:50px;border-bottom:3px solid var(--blue);display:grid;place-items:center;font-size:26px;background:#fff;border-radius:10px 10px 0 0}
+.gans.ok b{border-color:var(--ok);color:var(--ok)}.gans.bad b{border-color:var(--bad);color:var(--bad)}
+.gtiles{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}.gtile{min-width:54px;height:58px;border-radius:14px;background:#fff;border:2px solid var(--line);font-size:26px;font-weight:800;box-shadow:var(--shadow)}.gtile:disabled{opacity:.25}.gtile:not(:disabled):hover{border-color:var(--blue)}
+.gfillf{display:flex;gap:10px}.gfill{flex:1;font-size:22px;padding:14px 16px;border:2px solid var(--line);border-radius:14px}
+.gmatch{display:grid;grid-template-columns:1fr 1fr;gap:16px}.gmatch>div{display:flex;flex-direction:column;gap:10px}.gopt.mt{justify-content:center;min-height:56px}.gopt.sel{border-color:var(--blue);background:#eaf2ff}
+
 </style>
 </head>
 <body>
@@ -1788,6 +1794,22 @@ const GAME_DATA = {
   }
 };
 
+GAME_DATA.scramble = { title:'رتّب الحروف', fr:'Mots mélangés', ic:'sparkle', col:'c-purple', desc:'رتّب الحروف المبعثرة لتكوّن الكلمة.',
+  // w: الكلمة | h: تلميح بالعربية
+  A1:[{w:'bonjour',h:'مرحباً'},{w:'merci',h:'شكراً'},{w:'école',h:'مدرسة'},{w:'maison',h:'منزل'},{w:'fromage',h:'جبن'},{w:'famille',h:'عائلة'},{w:'lundi',h:'يوم الاثنين'},{w:'chaise',h:'كرسي'}],
+  A2:[{w:'boulangerie',h:'مخبز'},{w:'voyage',h:'رحلة'},{w:'cuisine',h:'مطبخ'},{w:'fenêtre',h:'نافذة'},{w:'légume',h:'خضار'},{w:'semaine',h:'أسبوع'},{w:'chanson',h:'أغنية'},{w:'musée',h:'متحف'}],
+  B1:[{w:'bibliothèque',h:'مكتبة'},{w:'environnement',h:'بيئة'},{w:'gouvernement',h:'حكومة'},{w:'quelquefois',h:'أحياناً'},{w:'développement',h:'تطوّر'},{w:'connaissance',h:'معرفة'},{w:'appartement',h:'شقة'},{w:'hôpital',h:'مستشفى'}] };
+GAME_DATA.match = { title:'طابِق الكلمات', fr:'Associer', ic:'link', col:'c-teal', desc:'صِل الكلمة الفرنسية بمعناها العربي.',
+  // f: فرنسي | m: المعنى
+  A1:[{f:'bonjour',m:'مرحباً'},{f:'merci',m:'شكراً'},{f:'livre',m:'كتاب'},{f:'eau',m:'ماء'},{f:'pain',m:'خبز'},{f:'maison',m:'منزل'},{f:'chat',m:'قطة'},{f:'chien',m:'كلب'},{f:'rouge',m:'أحمر'},{f:'bleu',m:'أزرق'}],
+  A2:[{f:'boulangerie',m:'مخبز'},{f:'pharmacie',m:'صيدلية'},{f:'gare',m:'محطة القطار'},{f:'rue',m:'شارع'},{f:'ville',m:'مدينة'},{f:'travail',m:'عمل'},{f:'cadeau',m:'هدية'},{f:'voisin',m:'جار'},{f:'billet',m:'تذكرة'},{f:'magasin',m:'متجر'}],
+  B1:[{f:'malgré',m:'رغم'},{f:'pourtant',m:'مع ذلك'},{f:'afin de',m:'من أجل'},{f:'davantage',m:'أكثر'},{f:'environ',m:'حوالي'},{f:'tandis que',m:'بينما'},{f:'d\'ailleurs',m:'علاوة على ذلك'},{f:'au lieu de',m:'بدلاً من'},{f:'soudain',m:'فجأة'},{f:'quant à',m:'أما بالنسبة إلى'}] };
+GAME_DATA.fill = { title:'أكمل الفراغ', fr:'Complète la phrase', ic:'file', col:'c-orange', desc:'اكتب الكلمة الناقصة في الجملة.',
+  // q: الجملة (الفراغ ___) | a: الإجابات المقبولة | e: شرح
+  A1:[{q:'Je ___ étudiant.',a:['suis'],e:'être مع je: suis.'},{q:'Tu ___ un livre.',a:['as'],e:'avoir مع tu: as.'},{q:'Nous ___ français. (parler)',a:['parlons'],e:'مع nous: -ons.'},{q:'Elle ___ à Paris. (habiter)',a:['habite'],e:'مع elle: -e.'},{q:'Ils ___ contents. (être)',a:['sont'],e:'être مع ils: sont.'},{q:'___ maison est grande.',a:['la'],e:'maison مؤنث: la.'},{q:'Vous ___ où ? (habiter)',a:['habitez'],e:'مع vous: -ez.'},{q:'J\'___ faim. (avoir)',a:['ai'],e:'j\'ai faim.'},{q:'Il ___ un chat. (avoir)',a:['a'],e:'avoir مع il: a.'},{q:'Nous ___ amis. (être)',a:['sommes'],e:'être مع nous: sommes.'}],
+  A2:[{q:'Hier, nous ___ au restaurant. (aller)',a:['sommes allés','sommes allées'],e:'aller يأخذ être في الماضي المركب.'},{q:'Demain, je ___ voyager. (aller)',a:['vais'],e:'المستقبل القريب: je vais + مصدر.'},{q:'Je ___ lave les mains.',a:['me'],e:'فعل انعكاسي: je me lave.'},{q:'Ils ___ le journal chaque matin. (lire)',a:['lisent'],e:'lire مع ils: lisent.'},{q:'Elle a ___ un gâteau. (faire)',a:['fait'],e:'participe passé لـ faire: fait.'},{q:'Nous ___ du sport le samedi. (faire)',a:['faisons'],e:'faire مع nous: faisons.'},{q:'Vous ___ la porte. (ouvrir)',a:['ouvrez'],e:'ouvrir مع vous: ouvrez.'},{q:'J\'ai ___ mon ami hier. (voir)',a:['vu'],e:'participe passé لـ voir: vu.'},{q:'Tu te ___ à quelle heure ? (réveiller)',a:['réveilles'],e:'مع tu: -es.'},{q:'Il ___ beau aujourd\'hui. (faire)',a:['fait'],e:'الطقس: il fait beau.'}],
+  B1:[{q:'Il faut que je ___ . (partir)',a:['parte'],e:'subjonctif: que je parte.'},{q:'Si j\'étais riche, je ___ une maison. (acheter)',a:['achèterais'],e:'conditionnel présent.'},{q:'Les fleurs que j\'ai ___ . (acheter)',a:['achetées'],e:'اتفاق مع المفعول المتقدم (les fleurs).'},{q:'Bien que tu ___ raison, je doute. (avoir)',a:['aies'],e:'bien que + subjonctif: aies.'},{q:'Je cherche un livre ___ parle de cuisine.',a:['qui'],e:'qui فاعل.'},{q:'La ville ___ je viens est petite.',a:['dont'],e:'venir de ← dont.'},{q:'Je pense qu\'il ___ demain. (venir)',a:['viendra'],e:'futur simple.'},{q:'Il parlait ___ marchant.',a:['en'],e:'gérondif: en + participe présent.'},{q:'Il faut que nous ___ attention. (faire)',a:['fassions'],e:'subjonctif de faire: fassions.'},{q:'Elle voudrait que tu ___ . (venir)',a:['viennes'],e:'subjonctif: que tu viennes.'}] };
+
 /* ============ محرك الألعاب (منطق عام، البيانات في GAME_DATA) ============ */
 const G = { view:'menu', game:null, level:null, qs:[], i:0, ok:0, pts:0, streak:0, maxStreak:0, pick:null, t0:0, t:0, snd:true, tot:0 };
 try{ G.snd = localStorage.getItem('fo_snd') !== '0'; }catch(e){}
@@ -1809,10 +1831,16 @@ const setBest = n => { try{ localStorage.setItem(bestKey(), String(n)); }catch(e
 function gameStart(level){
   const d = GAME_DATA[G.game], pool = d[level] || [];
   if(!pool.length) return;
-  const qs = shuf(pool).slice(0, GAME_ROUND).map(q => {
+  const isM = G.game==='match';
+  const qs = shuf(pool).slice(0, isM ? 6 : GAME_ROUND).map(q => {
+    if(G.game==='scramble'){ let l, tries = 0; do{ l = shuf(Array.from(q.w)); }while(l.join('')===q.w && ++tries<9); return { w:q.w, h:q.h, a:1, e:'الكلمة الصحيحة: '+q.w, tiles:l.map((c,k)=>({c,k})) }; }
+    if(G.game==='fill') return { q:q.q, acc:q.a, a:1, e:q.e };
+    if(isM) return q;
     if(G.game==='mcq'){ const o = shuf(q.o.map((t,k)=>({t,k}))); return { q:q.q, o:o.map(x=>x.t), a:o.findIndex(x=>x.k===q.a), e:q.e }; }
     return { q:q.q, a:q.a?0:1, e:q.e };
   });
+  G.m = isM ? { r:shuf(qs.map((p,k)=>({k,t:p.m}))), l:shuf(qs.map((p,k)=>({k,t:p.f}))), selL:null, done:[], err:0, bad:null, first:{} } : null;
+  G.sel = []; G.val = ''; G.close = '';
   Object.assign(G, { view:'play', level, qs, i:0, ok:0, pts:0, streak:0, maxStreak:0, pick:null, t0:Date.now(), t:0, tot:Date.now() });
   render(); window.scrollTo(0,0);
 }
@@ -1824,13 +1852,46 @@ function gameAnswer(k){
   else { G.streak = 0; beep('bad'); }
   render();
 }
+function gameFinish(ok, pts){ G.pick = ok ? 1 : 0; G.t = (Date.now()-G.t0)/1000; if(ok){ G.ok++; G.streak++; G.maxStreak = Math.max(G.maxStreak, G.streak); G.pts += 10 + (G.t<=8?5:0) + (G.streak>=3?5:0); beep('ok'); } else { G.streak = 0; beep('bad'); } render(); }
+const norm = s => String(s||'').toLowerCase().replace(/[\u2019\u2018`]/g,"'").replace(/\s+/g,' ').trim();
+const noAcc = s => norm(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function fillCheck(){
+  if(G.view!=='play' || G.pick!==null) return;
+  const inp = document.getElementById('gfill'); const val = norm(inp ? inp.value : G.val); if(!val) return;
+  const q = G.qs[G.i]; G.val = val;
+  if(q.acc.some(a=>norm(a)===val)){ G.close = ''; return gameFinish(true); }
+  if(q.acc.some(a=>noAcc(a)===noAcc(val))){ G.close = 'انتبه للحروف المشكَّلة (الأكسنت). الصحيح: ' + q.acc[0]; return gameFinish(true); }
+  G.close = 'الإجابة الصحيحة: ' + q.acc[0]; gameFinish(false);
+}
+function scrTile(k){
+  if(G.view!=='play' || G.pick!==null) return; k = +k; if(G.sel.includes(k)) return; G.sel.push(k);
+  const q = G.qs[G.i]; if(G.sel.length===q.w.length){ const w = G.sel.map(x=>q.tiles.find(t=>t.k===x).c).join(''); return gameFinish(w===q.w); }
+  render();
+}
+function scrBack(){ if(G.pick===null){ G.sel.pop(); render(); } }
+function scrClear(){ if(G.pick===null){ G.sel = []; render(); } }
+function matchPick(side, k){
+  const m = G.m; if(G.view!=='play' || !m || m.bad) return; k = +k;
+  if(m.done.includes(k)) return;
+  if(side==='l'){ m.selL = k; render(); return; }
+  if(m.selL===null) return;
+  if(m.selL===k){ m.done.push(k); if(!(k in m.first)) m.first[k]=true; m.selL = null; beep('ok'); if(m.done.length===G.qs.length){ matchEnd(); return; } }
+  else { m.err++; m.first[m.selL]=false; m.bad = k; beep('bad'); render(); setTimeout(()=>{ if(G.m===m){ m.bad = null; m.selL = null; render(); } }, 650); return; }
+  render();
+}
+function matchEnd(){
+  const n = G.qs.length; G.ok = Object.values(G.m.first).filter(Boolean).length;
+  G.pts = Math.max(0, n*10 - G.m.err*4); G.maxStreak = n - G.m.err > 0 ? n - G.m.err : 0;
+  G.view = 'end'; G.tot = Math.round((Date.now()-G.tot)/1000);
+  const b = getBest(); G.newBest = G.pts > b; if(G.newBest) setBest(G.pts); G.prevBest = b; if(G.m.err===0) beep('win'); render();
+}
 function gameNext(){
   if(G.view!=='play' || G.pick===null) return;
   if(G.i+1 >= G.qs.length){
     G.view = 'end'; G.tot = Math.round((Date.now()-G.tot)/1000);
     const b = getBest(); G.newBest = G.pts > b; if(G.newBest) setBest(G.pts);
     G.prevBest = b; if(G.ok === G.qs.length) beep('win');
-  } else { G.i++; G.pick = null; G.t0 = Date.now(); }
+  } else { G.i++; G.pick = null; G.t0 = Date.now(); G.sel = []; G.val = ''; G.close = ''; }
   render(); window.scrollTo(0,0);
 }
 function renderGames(v){
@@ -1851,12 +1912,31 @@ function renderGames(v){
   if(G.view==='play'){
     const q = G.qs[G.i], n = G.qs.length, ans = G.pick!==null;
     let body;
-    if(G.game==='mcq') body = `<div class="gopts">${q.o.map((t,k)=>`<button class="gopt ${ans?(k===q.a?'ok':k===G.pick?'bad':'dim'):''}" data-a="gAns" data-id="${k}" ${ans?'disabled':''}><i>${k+1}</i><span dir="auto">${esc(t)}</span></button>`).join('')}</div>`;
+    if(G.game==='match'){
+      const m = G.m;
+      v.innerHTML = `<div class="ghead"><span>${esc(d.title)} · ${G.level}</span><span>✔ ${m.done.length}/${n}</span><span>✖ ${m.err}</span>${snd}</div>
+        <div class="gbar"><i style="width:${m.done.length/n*100}%"></i></div>
+        <p class="gsub">اختر الكلمة الفرنسية ثم معناها العربي.</p>
+        <div class="gmatch"><div>${m.l.map(x=>`<button class="gopt mt ${m.done.includes(x.k)?'ok':m.selL===x.k?'sel':''}" data-a="gML" data-id="${x.k}" ${m.done.includes(x.k)?'disabled':''} dir="ltr">${esc(x.t)}</button>`).join('')}</div>
+        <div>${m.r.map(x=>`<button class="gopt mt ${m.done.includes(x.k)?'ok':m.bad===x.k?'bad':''}" data-a="gMR" data-id="${x.k}" ${m.done.includes(x.k)?'disabled':''}>${esc(x.t)}</button>`).join('')}</div></div>
+        <button class="chip" data-a="gMenu" style="margin-top:18px">إنهاء اللعبة</button>`;
+      return;
+    }
+    if(G.game==='scramble'){
+      const pk = G.sel.map(k=>q.tiles.find(t=>t.k===k).c);
+      body = `<div class="gans ${ans?(G.pick?'ok':'bad'):''}" dir="ltr">${q.w.split('').map((_,k)=>`<b>${pk[k]?esc(pk[k]):'&nbsp;'}</b>`).join('')}</div>
+        <div class="gtiles" dir="ltr">${q.tiles.map(t=>`<button class="gtile" data-a="gTile" data-id="${t.k}" ${ans||G.sel.includes(t.k)?'disabled':''}>${esc(t.c)}</button>`).join('')}</div>
+        ${ans?'':`<div class="gacts"><button class="chip" data-a="gBack">⌫ تراجع</button><button class="chip" data-a="gClear">مسح الكل</button></div>`}`;
+    }
+    else if(G.game==='fill'){
+      body = `<form class="gfillf" data-a="gFillForm" onsubmit="return false"><input id="gfill" class="in gfill" dir="ltr" lang="fr" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="اكتب هنا…" value="${esc(ans?G.val:'')}" ${ans?'disabled':''}>${ans?'':`<button type="button" class="gnext" data-a="gFill">تحقق</button>`}</form>`;
+    }
+    else if(G.game==='mcq') body = `<div class="gopts">${q.o.map((t,k)=>`<button class="gopt ${ans?(k===q.a?'ok':k===G.pick?'bad':'dim'):''}" data-a="gAns" data-id="${k}" ${ans?'disabled':''}><i>${k+1}</i><span dir="auto">${esc(t)}</span></button>`).join('')}</div>`;
     else body = `<div class="gtf">${['صح ✓ Vrai','خطأ ✗ Faux'].map((t,k)=>`<button class="gopt ${ans?(k===q.a?'ok':k===G.pick?'bad':'dim'):''}" data-a="gAns" data-id="${k}" ${ans?'disabled':''}><i>${k+1}</i><span>${t}</span></button>`).join('')}</div>`;
-    const fb = ans ? `<div class="gfb ${G.pick===q.a?'ok':'bad'}"><b>${G.pick===q.a?'أحسنت! 🎉':'ليست الإجابة الصحيحة'}</b><span>${esc(q.e||'')}</span></div><button class="gnext" data-a="gNext" autofocus>${G.i+1>=n?'عرض النتيجة':'السؤال التالي'} ←</button>` : '';
+    const fb = ans ? `<div class="gfb ${G.pick===q.a?'ok':'bad'}"><b>${G.pick===q.a?'أحسنت! 🎉':'ليست الإجابة الصحيحة'}</b><span>${esc(q.e||'')}${G.close&&G.game==='fill'?' — '+esc(G.close):''}</span></div><button class="gnext" data-a="gNext" autofocus>${G.i+1>=n?'عرض النتيجة':'السؤال التالي'} ←</button>` : '';
     v.innerHTML = `<div class="ghead"><span>${esc(d.title)} · ${G.level}</span><span>⭐ ${G.pts}</span>${G.streak>=2?`<span>🔥 ${G.streak}</span>`:''}${snd}</div>
       <div class="gbar"><i style="width:${(G.i+(ans?1:0))/n*100}%"></i></div>
-      <div class="gq"><small>السؤال ${G.i+1} من ${n}</small><h3 dir="auto">${esc(q.q)}</h3></div>${body}${fb}
+      <div class="gq"><small>السؤال ${G.i+1} من ${n}</small><h3 dir="auto">${esc(G.game==='scramble'?q.h:q.q)}</h3>${G.game==='scramble'?'<small>رتّب الحروف لتكوين الكلمة الفرنسية</small>':''}</div>${body}${fb}
       <button class="chip" data-a="gMenu" style="margin-top:18px">إنهاء اللعبة</button>`;
     return;
   }
@@ -1872,13 +1952,16 @@ function renderGames(v){
 const GH = {
   gPick:id=>{ if(!GAME_DATA[id]) return; G.game = id; G.view = 'level'; render(); },
   gLvl:id=>gameStart(id), gAns:id=>gameAnswer(id), gNext:gameNext,
-  gAgain:()=>gameStart(G.level), gLevels:()=>{ G.view='level'; render(); },
+  gAgain:()=>gameStart(G.level), gTile:id=>scrTile(id), gBack:scrBack, gClear:scrClear, gFill:fillCheck, gML:id=>matchPick('l',id), gMR:id=>matchPick('r',id),
+  gLevels:()=>{ G.view='level'; render(); },
   gMenu:()=>{ G.view='menu'; G.game=null; render(); },
   gSound:()=>{ G.snd = !G.snd; try{ localStorage.setItem('fo_snd', G.snd?'1':'0'); }catch(e){} render(); }
 };
 document.addEventListener('keydown', e => {
   if(state.tab!=='games' || G.view!=='play' || e.ctrlKey || e.metaKey || e.altKey) return;
   if(document.querySelector('#modal .ov') || /INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||'')) return;
+  if(G.game==='fill' && G.pick===null){ if(e.key==='Enter'){ e.preventDefault(); fillCheck(); } return; }
+  if(G.game==='scramble' || G.game==='match') { if(e.key==='Enter' && G.pick!==null){ e.preventDefault(); gameNext(); } else if(e.key==='Backspace') scrBack(); return; }
   if(/^[1-4]$/.test(e.key)) gameAnswer(+e.key-1);
   else if(e.key==='Enter' && G.pick!==null){ e.preventDefault(); gameNext(); }
 });
